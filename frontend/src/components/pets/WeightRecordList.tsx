@@ -38,9 +38,14 @@ export const WeightRecordList: React.FC<WeightRecordListProps> = ({
       const petId = selectedPetId ? Number(selectedPetId) : undefined;
       const response = await weightRecordApi.getAll(petId);
       setRecords(response.data.data);
-    } catch (err) {
-      setError('体重記録の取得に失敗しました');
+    } catch (err: any) {
       console.error('Error fetching weight records:', err);
+      setError('体重記録の取得に失敗しました');
+      
+      // Clear error after 5 seconds
+      setTimeout(() => {
+        setError(null);
+      }, 5000);
     } finally {
       setLoading(false);
     }
@@ -62,9 +67,21 @@ export const WeightRecordList: React.FC<WeightRecordListProps> = ({
     try {
       await weightRecordApi.delete(id);
       setRecords(records.filter(record => record.id !== id));
-    } catch (err) {
-      setError('体重記録の削除に失敗しました');
+    } catch (err: any) {
       console.error('Error deleting weight record:', err);
+      
+      // Check if it's an API error response with a specific message
+      let errorMessage = '体重記録の削除に失敗しました';
+      if (err.response?.data?.error?.message) {
+        errorMessage = err.response.data.error.message;
+      }
+      
+      setError(errorMessage);
+      
+      // Clear error after 5 seconds
+      setTimeout(() => {
+        setError(null);
+      }, 5000);
     }
   };
 

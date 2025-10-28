@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { body, param, query, validationResult } from 'express-validator';
 import { WeightRecordModel } from '../models/WeightRecord';
+import { sendSuccess, sendError } from '../utils/response';
 
 const router = Router();
 const weightRecordModel = new WeightRecordModel();
@@ -51,13 +52,7 @@ const validateDateRange = [
 const handleValidationErrors = (req: Request, res: Response): boolean => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    res.status(400).json({
-      error: {
-        message: 'Validation failed',
-        code: 'VALIDATION_ERROR',
-        details: errors.array()
-      }
-    });
+    sendError(res, 'Validation failed', 'VALIDATION_ERROR', 400, errors.array());
     return true;
   }
   return false;
@@ -83,15 +78,10 @@ router.get('/', [...validatePetId, ...validateDateRange], (req: Request, res: Re
       records = weightRecordModel.findAll();
     }
     
-    return res.json(records);
+    return sendSuccess(res, records);
   } catch (error) {
     console.error('Error fetching weight records:', error);
-    return res.status(500).json({
-      error: {
-        message: 'Failed to fetch weight records',
-        code: 'INTERNAL_ERROR'
-      }
-    });
+    return sendError(res, 'Failed to fetch weight records', 'INTERNAL_ERROR', 500);
   }
 });
 

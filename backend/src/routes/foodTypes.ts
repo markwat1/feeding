@@ -60,23 +60,13 @@ router.get('/:id', validateId, (req: Request, res: Response) => {
     const foodType = foodTypeModel.findById(id);
     
     if (!foodType) {
-      return res.status(404).json({
-        error: {
-          message: 'Food type not found',
-          code: 'FOOD_TYPE_NOT_FOUND'
-        }
-      });
+      return sendError(res, 'Food type not found', 'FOOD_TYPE_NOT_FOUND', 404);
     }
     
-    return res.json(foodType);
+    return sendSuccess(res, foodType);
   } catch (error) {
     console.error('Error fetching food type:', error);
-    return res.status(500).json({
-      error: {
-        message: 'Failed to fetch food type',
-        code: 'INTERNAL_ERROR'
-      }
-    });
+    return sendError(res, 'Failed to fetch food type', 'INTERNAL_ERROR', 500);
   }
 });
 
@@ -87,15 +77,10 @@ router.post('/', validateFoodType, (req: Request, res: Response) => {
   try {
     const { name, brand, description } = req.body;
     const foodType = foodTypeModel.create({ name, brand, description });
-    return res.status(201).json(foodType);
+    return sendSuccess(res, foodType, 'Food type created successfully', 201);
   } catch (error) {
     console.error('Error creating food type:', error);
-    return res.status(500).json({
-      error: {
-        message: 'Failed to create food type',
-        code: 'INTERNAL_ERROR'
-      }
-    });
+    return sendError(res, 'Failed to create food type', 'INTERNAL_ERROR', 500);
   }
 });
 
@@ -110,23 +95,13 @@ router.put('/:id', [...validateId, ...validateFoodType], (req: Request, res: Res
     const updatedFoodType = foodTypeModel.update(id, { name, brand, description });
     
     if (!updatedFoodType) {
-      return res.status(404).json({
-        error: {
-          message: 'Food type not found',
-          code: 'FOOD_TYPE_NOT_FOUND'
-        }
-      });
+      return sendError(res, 'Food type not found', 'FOOD_TYPE_NOT_FOUND', 404);
     }
     
-    return res.json(updatedFoodType);
+    return sendSuccess(res, updatedFoodType, 'Food type updated successfully');
   } catch (error) {
     console.error('Error updating food type:', error);
-    return res.status(500).json({
-      error: {
-        message: 'Failed to update food type',
-        code: 'INTERNAL_ERROR'
-      }
-    });
+    return sendError(res, 'Failed to update food type', 'INTERNAL_ERROR', 500);
   }
 });
 
@@ -139,23 +114,19 @@ router.delete('/:id', validateId, (req: Request, res: Response) => {
     const deleted = foodTypeModel.delete(id);
     
     if (!deleted) {
-      return res.status(404).json({
-        error: {
-          message: 'Food type not found',
-          code: 'FOOD_TYPE_NOT_FOUND'
-        }
-      });
+      return sendError(res, 'Food type not found', 'FOOD_TYPE_NOT_FOUND', 404);
     }
     
     return res.status(204).send();
   } catch (error) {
     console.error('Error deleting food type:', error);
-    return res.status(500).json({
-      error: {
-        message: 'Failed to delete food type',
-        code: 'INTERNAL_ERROR'
-      }
-    });
+    
+    // Check if it's a foreign key constraint error
+    if (error instanceof Error && error.message.includes('FOREIGN KEY constraint failed')) {
+      return sendError(res, 'この餌の種類は餌やりスケジュールで使用されているため削除できません', 'FOREIGN_KEY_CONSTRAINT', 400);
+    }
+    
+    return sendError(res, 'Failed to delete food type', 'INTERNAL_ERROR', 500);
   }
 });
 

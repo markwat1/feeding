@@ -32,9 +32,14 @@ export const FeedingScheduleList: React.FC<FeedingScheduleListProps> = ({
       
       setSchedules(schedulesResponse.data.data);
       setFoodTypes(foodTypesResponse.data.data);
-    } catch (err) {
-      setError('データの取得に失敗しました');
+    } catch (err: any) {
       console.error('Error fetching data:', err);
+      setError('データの取得に失敗しました');
+      
+      // Clear error after 5 seconds
+      setTimeout(() => {
+        setError(null);
+      }, 5000);
     } finally {
       setLoading(false);
     }
@@ -60,9 +65,14 @@ export const FeedingScheduleList: React.FC<FeedingScheduleListProps> = ({
           ? { ...s, isActive: !s.isActive }
           : s
       ));
-    } catch (err) {
-      setError('ステータスの更新に失敗しました');
+    } catch (err: any) {
       console.error('Error updating schedule status:', err);
+      setError('ステータスの更新に失敗しました');
+      
+      // Clear error after 5 seconds
+      setTimeout(() => {
+        setError(null);
+      }, 5000);
     }
   };
 
@@ -74,9 +84,23 @@ export const FeedingScheduleList: React.FC<FeedingScheduleListProps> = ({
     try {
       await feedingScheduleApi.delete(id);
       setSchedules(schedules.filter(s => s.id !== id));
-    } catch (err) {
-      setError('削除に失敗しました');
+    } catch (err: any) {
       console.error('Error deleting schedule:', err);
+      
+      // Check if it's an API error response with a specific message
+      let errorMessage = '削除に失敗しました';
+      if (err.response?.data?.error?.message) {
+        errorMessage = err.response.data.error.message;
+      } else if (err.response?.status === 400) {
+        errorMessage = 'このスケジュールは使用中のため削除できません';
+      }
+      
+      setError(errorMessage);
+      
+      // Clear error after 5 seconds
+      setTimeout(() => {
+        setError(null);
+      }, 5000);
     }
   };
 

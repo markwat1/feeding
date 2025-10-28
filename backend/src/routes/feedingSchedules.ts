@@ -30,13 +30,7 @@ const validateId = [
 const handleValidationErrors = (req: Request, res: Response): boolean => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    res.status(400).json({
-      error: {
-        message: 'Validation failed',
-        code: 'VALIDATION_ERROR',
-        details: errors.array()
-      }
-    });
+    sendError(res, 'Validation failed', 'VALIDATION_ERROR', 400, errors.array());
     return true;
   }
   return false;
@@ -171,23 +165,19 @@ router.delete('/:id', validateId, (req: Request, res: Response) => {
     const deleted = feedingScheduleModel.delete(id);
     
     if (!deleted) {
-      return res.status(404).json({
-        error: {
-          message: 'Feeding schedule not found',
-          code: 'FEEDING_SCHEDULE_NOT_FOUND'
-        }
-      });
+      return sendError(res, 'Feeding schedule not found', 'FEEDING_SCHEDULE_NOT_FOUND', 404);
     }
     
     return res.status(204).send();
   } catch (error) {
     console.error('Error deleting feeding schedule:', error);
-    return res.status(500).json({
-      error: {
-        message: 'Failed to delete feeding schedule',
-        code: 'INTERNAL_ERROR'
-      }
-    });
+    
+    // Check if it's a foreign key constraint error
+    if (error instanceof Error && error.message.includes('FOREIGN KEY constraint failed')) {
+      return sendError(res, 'このスケジュールは餌やり記録で使用されているため削除できません', 'FOREIGN_KEY_CONSTRAINT', 400);
+    }
+    
+    return sendError(res, 'Failed to delete feeding schedule', 'INTERNAL_ERROR', 500);
   }
 });
 

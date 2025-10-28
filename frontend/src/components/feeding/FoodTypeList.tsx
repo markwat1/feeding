@@ -21,9 +21,14 @@ export const FoodTypeList: React.FC<FoodTypeListProps> = ({ onEdit, onAdd, refre
       setError(null);
       const response = await foodTypeApi.getAll();
       setFoodTypes(response.data.data);
-    } catch (err) {
-      setError('餌の種類の取得に失敗しました');
+    } catch (err: any) {
       console.error('Error fetching food types:', err);
+      setError('餌の種類の取得に失敗しました');
+      
+      // Clear error after 5 seconds
+      setTimeout(() => {
+        setError(null);
+      }, 5000);
     } finally {
       setLoading(false);
     }
@@ -41,9 +46,23 @@ export const FoodTypeList: React.FC<FoodTypeListProps> = ({ onEdit, onAdd, refre
     try {
       await foodTypeApi.delete(id);
       setFoodTypes(foodTypes.filter(ft => ft.id !== id));
-    } catch (err) {
-      setError('削除に失敗しました');
+    } catch (err: any) {
       console.error('Error deleting food type:', err);
+      
+      // Check if it's an API error response with a specific message
+      let errorMessage = '削除に失敗しました';
+      if (err.response?.data?.error?.message) {
+        errorMessage = err.response.data.error.message;
+      } else if (err.response?.status === 400) {
+        errorMessage = 'この餌の種類は使用中のため削除できません';
+      }
+      
+      setError(errorMessage);
+      
+      // Clear error after 5 seconds
+      setTimeout(() => {
+        setError(null);
+      }, 5000);
     }
   };
 
