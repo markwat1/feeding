@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { body, param, query, validationResult } from 'express-validator';
 import { FeedingScheduleModel } from '../models/FeedingSchedule';
+import { sendSuccess, sendError } from '../utils/response';
 
 const router = Router();
 const feedingScheduleModel = new FeedingScheduleModel();
@@ -53,15 +54,10 @@ router.get('/', (req: Request, res: Response) => {
       schedules = feedingScheduleModel.findAll();
     }
     
-    return res.json(schedules);
+    return sendSuccess(res, schedules);
   } catch (error) {
     console.error('Error fetching feeding schedules:', error);
-    return res.status(500).json({
-      error: {
-        message: 'Failed to fetch feeding schedules',
-        code: 'INTERNAL_ERROR'
-      }
-    });
+    return sendError(res, 'Failed to fetch feeding schedules', 'INTERNAL_ERROR', 500);
   }
 });
 

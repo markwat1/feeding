@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/app.js",
-    "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
+    "dev": "ts-node-dev --respawn --transpile-only --compiler-options '{\"target\":\"ES2020\"}' src/app.ts",
     "test": "jest"
   },
   "keywords": [

@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { body, param, validationResult } from 'express-validator';
 import { PetModel } from '../models/Pet';
+import { sendSuccess, sendError } from '../utils/response';
 
 const router = Router();
 const petModel = new PetModel();
@@ -31,13 +32,7 @@ const validateId = [
 const handleValidationErrors = (req: Request, res: Response): boolean => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    res.status(400).json({
-      error: {
-        message: 'Validation failed',
-        code: 'VALIDATION_ERROR',
-        details: errors.array()
-      }
-    });
+    sendError(res, 'Validation failed', 'VALIDATION_ERROR', 400, errors.array());
     return true;
   }
   return false;
@@ -47,15 +42,10 @@ const handleValidationErrors = (req: Request, res: Response): boolean => {
 router.get('/', (req: Request, res: Response) => {
   try {
     const pets = petModel.findAll();
-    return res.json(pets);
+    return sendSuccess(res, pets);
   } catch (error) {
     console.error('Error fetching pets:', error);
-    return res.status(500).json({
-      error: {
-        message: 'Failed to fetch pets',
-        code: 'INTERNAL_ERROR'
-      }
-    });
+    return sendError(res, 'Failed to fetch pets', 'INTERNAL_ERROR', 500);
   }
 });
 
@@ -68,23 +58,13 @@ router.get('/:id', validateId, (req: Request, res: Response) => {
     const pet = petModel.findById(id);
     
     if (!pet) {
-      return res.status(404).json({
-        error: {
-          message: 'Pet not found',
-          code: 'PET_NOT_FOUND'
-        }
-      });
+      return sendError(res, 'Pet not found', 'PET_NOT_FOUND', 404);
     }
     
-    return res.json(pet);
+    return sendSuccess(res, pet);
   } catch (error) {
     console.error('Error fetching pet:', error);
-    return res.status(500).json({
-      error: {
-        message: 'Failed to fetch pet',
-        code: 'INTERNAL_ERROR'
-      }
-    });
+    return sendError(res, 'Failed to fetch pet', 'INTERNAL_ERROR', 500);
   }
 });
 
@@ -95,15 +75,10 @@ router.post('/', validatePet, (req: Request, res: Response) => {
   try {
     const { name, species, birthDate } = req.body;
     const pet = petModel.create({ name, species, birthDate });
-    return res.status(201).json(pet);
+    return sendSuccess(res, pet, 'Pet created successfully', 201);
   } catch (error) {
     console.error('Error creating pet:', error);
-    return res.status(500).json({
-      error: {
-        message: 'Failed to create pet',
-        code: 'INTERNAL_ERROR'
-      }
-    });
+    return sendError(res, 'Failed to create pet', 'INTERNAL_ERROR', 500);
   }
 });
 
@@ -118,23 +93,13 @@ router.put('/:id', [...validateId, ...validatePet], (req: Request, res: Response
     const updatedPet = petModel.update(id, { name, species, birthDate });
     
     if (!updatedPet) {
-      return res.status(404).json({
-        error: {
-          message: 'Pet not found',
-          code: 'PET_NOT_FOUND'
-        }
-      });
+      return sendError(res, 'Pet not found', 'PET_NOT_FOUND', 404);
     }
     
-    return res.json(updatedPet);
+    return sendSuccess(res, updatedPet, 'Pet updated successfully');
   } catch (error) {
     console.error('Error updating pet:', error);
-    return res.status(500).json({
-      error: {
-        message: 'Failed to update pet',
-        code: 'INTERNAL_ERROR'
-      }
-    });
+    return sendError(res, 'Failed to update pet', 'INTERNAL_ERROR', 500);
   }
 });
 
@@ -147,23 +112,13 @@ router.delete('/:id', validateId, (req: Request, res: Response) => {
     const deleted = petModel.delete(id);
     
     if (!deleted) {
-      return res.status(404).json({
-        error: {
-          message: 'Pet not found',
-          code: 'PET_NOT_FOUND'
-        }
-      });
+      return sendError(res, 'Pet not found', 'PET_NOT_FOUND', 404);
     }
     
     return res.status(204).send();
   } catch (error) {
     console.error('Error deleting pet:', error);
-    return res.status(500).json({
-      error: {
-        message: 'Failed to delete pet',
-        code: 'INTERNAL_ERROR'
-      }
-    });
+    return sendError(res, 'Failed to delete pet', 'INTERNAL_ERROR', 500);
   }
 });
 

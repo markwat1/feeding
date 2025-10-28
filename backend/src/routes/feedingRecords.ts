@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { body, param, query, validationResult } from 'express-validator';
 import { FeedingRecordModel } from '../models/FeedingRecord';
+import { sendSuccess, sendError } from '../utils/response';
 
 const router = Router();
 const feedingRecordModel = new FeedingRecordModel();
@@ -44,13 +45,7 @@ const validateDateRange = [
 const handleValidationErrors = (req: Request, res: Response): boolean => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    res.status(400).json({
-      error: {
-        message: 'Validation failed',
-        code: 'VALIDATION_ERROR',
-        details: errors.array()
-      }
-    });
+    sendError(res, 'Validation failed', 'VALIDATION_ERROR', 400, errors.array());
     return true;
   }
   return false;
@@ -75,15 +70,10 @@ router.get('/', validateDateRange, (req: Request, res: Response) => {
       records = feedingRecordModel.findAll(limitNum, offsetNum);
     }
     
-    return res.json(records);
+    return sendSuccess(res, records);
   } catch (error) {
     console.error('Error fetching feeding records:', error);
-    return res.status(500).json({
-      error: {
-        message: 'Failed to fetch feeding records',
-        code: 'INTERNAL_ERROR'
-      }
-    });
+    return sendError(res, 'Failed to fetch feeding records', 'INTERNAL_ERROR', 500);
   }
 });
 
@@ -95,12 +85,7 @@ router.get('/stats', validateDateRange, (req: Request, res: Response) => {
     const { startDate, endDate } = req.query;
     
     if (!startDate || !endDate) {
-      res.status(400).json({
-        error: {
-          message: 'Both startDate and endDate are required for statistics',
-          code: 'MISSING_DATE_RANGE'
-        }
-      });
+      return sendError(res, 'Both startDate and endDate are required for statistics', 'MISSING_DATE_RANGE', 400);
     }
     
     const stats = feedingRecordModel.getCompletionRate(
@@ -108,15 +93,10 @@ router.get('/stats', validateDateRange, (req: Request, res: Response) => {
       endDate as string
     );
     
-    return res.json(stats);
+    return sendSuccess(res, stats);
   } catch (error) {
     console.error('Error fetching feeding statistics:', error);
-    return res.status(500).json({
-      error: {
-        message: 'Failed to fetch feeding statistics',
-        code: 'INTERNAL_ERROR'
-      }
-    });
+    return sendError(res, 'Failed to fetch feeding statistics', 'INTERNAL_ERROR', 500);
   }
 });
 

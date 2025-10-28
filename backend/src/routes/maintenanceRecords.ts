@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { body, param, query, validationResult } from 'express-validator';
 import { MaintenanceRecordModel } from '../models/MaintenanceRecord';
+import { sendSuccess, sendError } from '../utils/response';
 
 const router = Router();
 const maintenanceRecordModel = new MaintenanceRecordModel();
@@ -55,13 +56,7 @@ const validateDays = [
 const handleValidationErrors = (req: Request, res: Response): boolean => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    res.status(400).json({
-      error: {
-        message: 'Validation failed',
-        code: 'VALIDATION_ERROR',
-        details: errors.array()
-      }
-    });
+    sendError(res, 'Validation failed', 'VALIDATION_ERROR', 400, errors.array());
     return true;
   }
   return false;
@@ -85,15 +80,10 @@ router.get('/', [...validateType, ...validateDateRange], (req: Request, res: Res
       records = maintenanceRecordModel.findAll(type as 'water' | 'toilet' | undefined);
     }
     
-    return res.json(records);
+    return sendSuccess(res, records);
   } catch (error) {
     console.error('Error fetching maintenance records:', error);
-    return res.status(500).json({
-      error: {
-        message: 'Failed to fetch maintenance records',
-        code: 'INTERNAL_ERROR'
-      }
-    });
+    return sendError(res, 'Failed to fetch maintenance records', 'INTERNAL_ERROR', 500);
   }
 });
 
@@ -110,15 +100,10 @@ router.get('/recent', [...validateType, ...validateDays], (req: Request, res: Re
       type as 'water' | 'toilet' | undefined
     );
     
-    return res.json(records);
+    return sendSuccess(res, records);
   } catch (error) {
     console.error('Error fetching recent maintenance records:', error);
-    return res.status(500).json({
-      error: {
-        message: 'Failed to fetch recent maintenance records',
-        code: 'INTERNAL_ERROR'
-      }
-    });
+    return sendError(res, 'Failed to fetch recent maintenance records', 'INTERNAL_ERROR', 500);
   }
 });
 

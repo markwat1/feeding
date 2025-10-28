@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { body, param, validationResult } from 'express-validator';
 import { FoodTypeModel } from '../models/FoodType';
+import { sendSuccess, sendError } from '../utils/response';
 
 const router = Router();
 const foodTypeModel = new FoodTypeModel();
@@ -33,13 +34,7 @@ const validateId = [
 const handleValidationErrors = (req: Request, res: Response): boolean => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    res.status(400).json({
-      error: {
-        message: 'Validation failed',
-        code: 'VALIDATION_ERROR',
-        details: errors.array()
-      }
-    });
+    sendError(res, 'Validation failed', 'VALIDATION_ERROR', 400, errors.array());
     return true;
   }
   return false;
@@ -49,15 +44,10 @@ const handleValidationErrors = (req: Request, res: Response): boolean => {
 router.get('/', (req: Request, res: Response) => {
   try {
     const foodTypes = foodTypeModel.findAll();
-    return res.json(foodTypes);
+    return sendSuccess(res, foodTypes);
   } catch (error) {
     console.error('Error fetching food types:', error);
-    return res.status(500).json({
-      error: {
-        message: 'Failed to fetch food types',
-        code: 'INTERNAL_ERROR'
-      }
-    });
+    return sendError(res, 'Failed to fetch food types', 'INTERNAL_ERROR', 500);
   }
 });
 
