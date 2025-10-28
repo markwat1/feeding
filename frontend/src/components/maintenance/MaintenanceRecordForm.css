@@ -1,0 +1,23 @@
+.maintenance-record-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 500px;
+}
+
+.maintenance-record-form__actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+  .maintenance-record-form__actions {
+    flex-direction: column-reverse;
+  }
+  
+  .maintenance-record-form__actions button {
+    width: 100%;
+  }
+}

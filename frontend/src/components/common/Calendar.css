@@ -1,0 +1,133 @@
+.calendar {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.calendar-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.calendar-nav-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #666;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.calendar-nav-btn:hover {
+  background: #e9ecef;
+  color: #333;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.calendar-day-header {
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #666;
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.calendar-day {
+  min-height: 80px;
+  border-right: 1px solid #e9ecef;
+  border-bottom: 1px solid #e9ecef;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  position: relative;
+}
+
+.calendar-day:hover {
+  background: #f8f9fa;
+}
+
+.calendar-day:nth-child(7n) {
+  border-right: none;
+}
+
+.calendar-day--other-month {
+  background: #fafafa;
+  color: #999;
+}
+
+.calendar-day--other-month:hover {
+  background: #f0f0f0;
+}
+
+.calendar-day--today {
+  background: #e3f2fd;
+}
+
+.calendar-day--today .calendar-day-number {
+  background: #2196f3;
+  color: white;
+}
+
+.calendar-day--selected {
+  background: #fff3e0;
+  border: 2px solid #ff9800;
+}
+
+.calendar-day-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 50%;
+}
+
+.calendar-day-content {
+  padding: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1.2;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .calendar-day {
+    min-height: 60px;
+  }
+  
+  .calendar-day-header {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.75rem;
+  }
+  
+  .calendar-day-number {
+    width: 20px;
+    height: 20px;
+    font-size: 0.75rem;
+  }
+  
+  .calendar-day-content {
+    font-size: 0.625rem;
+  }
+}

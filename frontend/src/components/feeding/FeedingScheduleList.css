@@ -1,0 +1,152 @@
+.schedule-list {
+  padding: 20px;
+}
+
+.schedule-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.schedule-list-header h2 {
+  margin: 0;
+  color: #333;
+}
+
+.schedule-list-loading,
+.schedule-list-error {
+  text-align: center;
+  padding: 40px;
+}
+
+.schedule-list-error {
+  color: #d32f2f;
+}
+
+.schedule-list-empty {
+  text-align: center;
+  padding: 60px 20px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.schedule-list-empty p {
+  margin-bottom: 20px;
+  color: #666;
+  font-size: 16px;
+}
+
+.schedule-section {
+  margin-bottom: 32px;
+}
+
+.schedule-section-title {
+  margin: 0 0 16px 0;
+  color: #333;
+  font-size: 20px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.schedule-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.schedule-card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s ease;
+}
+
+.schedule-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.schedule-card.active {
+  border-left: 4px solid #4caf50;
+}
+
+.schedule-card.inactive {
+  border-left: 4px solid #ff9800;
+  opacity: 0.7;
+}
+
+.schedule-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.schedule-time {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  font-family: 'Courier New', monospace;
+}
+
+.schedule-card.inactive .schedule-time {
+  color: #666;
+}
+
+.schedule-card-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.schedule-card-content p {
+  margin: 8px 0;
+  line-height: 1.5;
+}
+
+.schedule-food-type {
+  color: #555;
+  font-size: 16px;
+}
+
+.schedule-created {
+  color: #888;
+  font-size: 14px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+@media (max-width: 768px) {
+  .schedule-list {
+    padding: 16px;
+  }
+  
+  .schedule-list-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+  
+  .schedule-list-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .schedule-card-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  
+  .schedule-card-actions {
+    justify-content: flex-end;
+  }
+  
+  .schedule-time {
+    font-size: 20px;
+  }
+}

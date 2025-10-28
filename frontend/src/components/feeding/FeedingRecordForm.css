@@ -1,0 +1,169 @@
+.record-form-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.record-form {
+  background: white;
+  border-radius: 8px;
+  padding: 24px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.record-form-header {
+  margin-bottom: 24px;
+}
+
+.record-form-header h2 {
+  margin: 0;
+  color: #333;
+  font-size: 24px;
+}
+
+.record-form-error {
+  background: #ffebee;
+  color: #c62828;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  border: 1px solid #ffcdd2;
+}
+
+.record-form-warning {
+  background: #fff3e0;
+  color: #ef6c00;
+  padding: 16px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  border: 1px solid #ffcc02;
+  text-align: center;
+}
+
+.record-form-warning p {
+  margin: 0 0 16px 0;
+}
+
+.record-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.record-form-help {
+  font-size: 14px;
+  color: #666;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+.record-form-datetime {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  background: white;
+}
+
+.record-form-datetime:focus {
+  outline: none;
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+}
+
+.record-form-datetime:disabled {
+  background: #f5f5f5;
+  color: #666;
+}
+
+.record-form-radio-group {
+  display: flex;
+  gap: 20px;
+}
+
+.record-form-radio {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 16px;
+  color: #333;
+}
+
+.record-form-radio input[type="radio"] {
+  margin-right: 8px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.record-form-radio span {
+  user-select: none;
+}
+
+.record-form-textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 80px;
+}
+
+.record-form-textarea:focus {
+  outline: none;
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+}
+
+.record-form-textarea:disabled {
+  background: #f5f5f5;
+  color: #666;
+}
+
+.record-form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+@media (max-width: 768px) {
+  .record-form-container {
+    padding: 16px;
+  }
+  
+  .record-form {
+    padding: 20px;
+    max-height: 95vh;
+  }
+  
+  .record-form-header h2 {
+    font-size: 20px;
+  }
+  
+  .record-form-radio-group {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .record-form-actions {
+    flex-direction: column-reverse;
+  }
+}
